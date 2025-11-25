@@ -2,13 +2,13 @@ import os
 from openai import OpenAI
 from typing import Tuple
 
-def generate_story(headline: str, style: str) -> Tuple[str, str]:
+def generate_story(headline: str, personality_context: str) -> Tuple[str, str]:
     """
-    Generates a story based on a single headline and a specific style using an AI API.
+    Generates a story based on a single headline and a specific personality context using an AI API.
     
     Args:
         headline: A single news headline.
-        style: The desired style of the story (e.g., 'conspiracy', 'positive').
+        personality_context: The specific instructions for the personality (e.g., 'Add a style of compassion...').
         
     Returns:
         A tuple containing (title, content).
@@ -29,12 +29,8 @@ def generate_story(headline: str, style: str) -> Tuple[str, str]:
     
     Write an engaging, cohesive 800-word story based on this headline.
     
-    The style of the story must be: {style.upper()}.
-    
-    Style Guidelines:
-    - If 'CONSPIRACY': Connect unrelated events into a grand theory, use suspicious tone, question official narratives.
-    - If 'POSITIVE': Focus on hope, resilience, and the good in humanity. Frame challenges as opportunities.
-    - If 'HUMAN INTEREST': Focus on the personal impact, emotions, and individual stories behind the news.
+    Personality/Style Instructions:
+    {personality_context}
     
     Formatting Guidelines:
     - Use HTML tags for headings (e.g., <h2>, <h3>). 

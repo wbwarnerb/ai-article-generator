@@ -22,17 +22,30 @@ def save_history(history):
     with open(HISTORY_FILE, 'w') as f:
         json.dump(list(history), f)
 
+from personalities import PERSONALITIES
+
 def main():
     load_dotenv()
     
     parser = argparse.ArgumentParser(description="Gravity Storybuilder: Scrape news, generate stories, and publish.")
-    parser.add_argument("--style", type=str, choices=['conspiracy', 'positive', 'human interest'], default='positive', help="Style of the story to generate.")
+    parser.add_argument("--personality", type=str, choices=list(PERSONALITIES.keys()), default='alice', help="The personality to use for generation and publishing.")
     parser.add_argument("--dry-run", action="store_true", help="Generate story but do not publish to WordPress.")
     
     args = parser.parse_args()
     
-    print(f"--- Starting Gravity Storybuilder (Style: {args.style}) ---")
+    personality_config = PERSONALITIES[args.personality]
     
+    print(f"--- Starting Gravity Storybuilder (Personality: {args.personality.capitalize()}) ---")
+    
+    # Load credentials for this personality
+    wp_user = os.getenv(personality_config['env_user_key'])
+    wp_pass = os.getenv(personality_config['env_pass_key'])
+    
+    if not args.dry_run and not (wp_user and wp_pass):
+        print(f"Error: Credentials for {args.personality} not found in environment variables.")
+        print(f"Expected {personality_config['env_user_key']} and {personality_config['env_pass_key']}.")
+        return
+
     # Load history
     history = load_history()
     print(f"Loaded {len(history)} previously processed headlines.")
@@ -57,7 +70,8 @@ def main():
             
         print(f"\n--- Processing Headline {i}/{len(headlines)}: {headline[:50]}... ---")
         
-        title, content = generate_story(headline, args.style)
+        # Pass the personality's prompt modifier
+        title, content = generate_story(headline, personality_config['prompt_modifier'])
         
         if title == "Error":
             print(f"Error generating story: {content}")
@@ -70,11 +84,9 @@ def main():
         if args.dry_run:
             print("Dry run enabled. Skipping publication.")
             print(f"Content Preview: {content[:200]}...")
-            # Still add to history in dry run? Maybe not, to allow re-testing. 
-            # Let's NOT add to history in dry run.
         else:
-            print("Publishing to WordPress...")
-            result = publish_to_wordpress(title, content, status='draft')
+            print(f"Publishing to WordPress as {args.personality}...")
+            result = publish_to_wordpress(title, content, wp_user, wp_pass, status='draft')
             print(result)
             
             # Add to history only if published successfully (or attempted)
