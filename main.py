@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from scraper import fetch_headlines
 from generator import generate_story
 from publisher import publish_to_wordpress
+from researcher import analyze_headline, perform_research, format_citations
 
 import json
 
@@ -70,8 +71,21 @@ def main():
             
         print(f"\n--- Processing Headline {i}/{len(headlines)}: {headline[:50]}... ---")
         
-        # Pass the personality's prompt modifier
-        title, content = generate_story(headline, personality_config['prompt_modifier'])
+        # 1.1 Analyze and Research
+        print(f"  - Analyzing headline for {args.personality}...")
+        thesis, queries = analyze_headline(headline, personality_config['prompt_modifier'])
+        print(f"  - Thesis: {thesis}")
+        print(f"  - Research Queries: {queries}")
+        
+        research_results = []
+        if queries:
+            print(f"  - Performing research...")
+            research_results = perform_research(queries)
+            
+        research_data = format_citations(research_results)
+        
+        # Pass the personality's prompt modifier and research data
+        title, content = generate_story(headline, personality_config['prompt_modifier'], thesis, research_data)
         
         if title == "Error":
             print(f"Error generating story: {content}")

@@ -2,13 +2,15 @@ import os
 from openai import OpenAI
 from typing import Tuple
 
-def generate_story(headline: str, personality_context: str) -> Tuple[str, str]:
+def generate_story(headline: str, personality_context: str, thesis: str = "", research_data: str = "") -> Tuple[str, str]:
     """
-    Generates a story based on a single headline and a specific personality context using an AI API.
+    Generates a story based on a single headline, personality context, and research data.
     
     Args:
         headline: A single news headline.
-        personality_context: The specific instructions for the personality (e.g., 'Add a style of compassion...').
+        personality_context: The specific instructions for the personality.
+        thesis: The derived thesis statement.
+        research_data: Formatted research findings and citations.
         
     Returns:
         A tuple containing (title, content).
@@ -22,15 +24,27 @@ def generate_story(headline: str, personality_context: str) -> Tuple[str, str]:
         
     client = OpenAI(api_key=api_key, base_url=base_url)
     
-    system_prompt = "You are a creative journalist and storyteller."
+    system_prompt = "You are a creative journalist and storyteller. You write detailed, well-researched articles."
     
     user_prompt = f"""
     Here is a news headline: "{headline}"
     
-    Write an engaging, cohesive 800-word story based on this headline.
+    Thesis Statement:
+    {thesis}
+    
+    Research Data:
+    {research_data}
+    
+    Write an engaging, cohesive 800-word story based on this headline and the provided research.
     
     Personality/Style Instructions:
     {personality_context}
+    
+    Requirements:
+    - Incorporate the research points to support the thesis.
+    - Use the provided research sources.
+    - Cite your sources in the text using MLA format (Author/Title).
+    - Include a "Works Cited" section at the end with the full MLA citations provided in the research data.
     
     Formatting Guidelines:
     - Use HTML tags for headings (e.g., <h2>, <h3>). 
@@ -40,7 +54,7 @@ def generate_story(headline: str, personality_context: str) -> Tuple[str, str]:
     Output Format:
     You MUST return the response in the following format:
     TITLE: [REWRITE the title to match the personality. Do NOT use the original headline.]
-    CONTENT: [Your story content here]
+    CONTENT: [Your story content here, including Works Cited]
     """
     
     try:

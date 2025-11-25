@@ -2,3 +2,4 @@ feedparser
 requests
 openai
 python-dotenv
+ddgs
