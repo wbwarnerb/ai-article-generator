@@ -29,6 +29,7 @@ class TestPersonalities(unittest.TestCase):
         user_prompt = messages[1]['content']
         
         self.assertIn(personality_context, user_prompt)
+        self.assertIn("REWRITE the title", user_prompt)
 
     @patch('publisher.requests.post')
     @patch('os.getenv')

@@ -39,7 +39,7 @@ def generate_story(headline: str, personality_context: str) -> Tuple[str, str]:
     
     Output Format:
     You MUST return the response in the following format:
-    TITLE: [Your styled title here]
+    TITLE: [REWRITE the title to match the personality. Do NOT use the original headline.]
     CONTENT: [Your story content here]
     """
     
