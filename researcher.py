@@ -108,6 +108,6 @@ def format_citations(research_results: List[Dict]) -> str:
         formatted_text += f"URL: {result['url']}\n"
         formatted_text += f"Snippet: {result['snippet']}\n"
         # MLA-ish citation (simplified for the generator to use)
-        formatted_text += f"MLA Citation: {result['title']}. {result['url']}. Accessed via Web Search.\n\n"
+        formatted_text += f"MLA Citation: {result['title']}. <a href='{result['url']}'>{result['url']}</a>. Accessed via Web Search.\n\n"
         
     return formatted_text

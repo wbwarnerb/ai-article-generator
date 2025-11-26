@@ -41,10 +41,13 @@ def generate_story(headline: str, personality_context: str, thesis: str = "", re
     {personality_context}
     
     Requirements:
-    - Incorporate the research points to support the thesis.
+     - Incorporate the research points to support the thesis.
     - Use the provided research sources.
     - Cite your sources in the text using MLA format (Author/Title).
-    - Include a "Works Cited" section at the end with the full MLA citations provided in the research data.
+    - Include a "Works Cited" section at the end with the full MLA citations provided in the research data. Ensure that all URLs in the Works Cited section are formatted as clickable HTML hyperlinks (<a href="...">...</a>).
+    - Structure the article with multiple sections using <h2> headings.
+    - Each section MUST contain multiple paragraphs (aim for 3-4 paragraphs per section) to ensure depth and readability.
+    - The content should be substantial and detailed.
     
     Formatting Guidelines:
     - Use HTML tags for headings (e.g., <h2>, <h3>). 

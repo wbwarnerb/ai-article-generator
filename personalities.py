@@ -23,7 +23,7 @@ PERSONALITIES = {
     },
     "mike": {
         "style": "financial",
-        "prompt_modifier": "Focus heavily on financial implications and markets. Discuss stocks, bonds, economic indicators, and how this news affects the bottom line for businesses and investors.",
+        "prompt_modifier": "Focus heavily on financial implications and markets. Writing for a financial audience. Discuss stocks, bonds, economic indicators, and how this news affects the bottom line for businesses and investors.",
         "env_user_key": "WP_USER_MIKE",
         "env_pass_key": "WP_PASS_MIKE",
         "rss_feeds": [

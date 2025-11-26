@@ -30,8 +30,9 @@ def fetch_headlines(sources: List[str] = None) -> List[str]:
                 print(f"Warning: Issue parsing feed {source}: {feed.bozo_exception}")
                 continue
                 
-            # Get top 5 headlines from each source to avoid overwhelming the context
-            for entry in feed.entries[:5]:
+            # Get top 5 headlines from each source to avoid overwhelming the context [:5]
+            # lowering to 2 headlines for each source as 15 is a lot [:2]
+            for entry in feed.entries[:2]:
                 headlines.append(entry.title)
                 
         except Exception as e:
