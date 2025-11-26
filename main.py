@@ -3,8 +3,9 @@ import os
 from dotenv import load_dotenv
 from scraper import fetch_headlines
 from generator import generate_story
-from publisher import publish_to_wordpress
+from publisher import publish_to_wordpress, upload_media
 from researcher import analyze_headline, perform_research, format_citations
+from image_generator import generate_image
 
 import json
 
@@ -53,7 +54,8 @@ def main():
     
     # 1. Scrape
     print("Step 1: Scraping headlines...")
-    headlines = fetch_headlines()
+    rss_feeds = personality_config.get('rss_feeds')
+    headlines = fetch_headlines(rss_feeds)
     if not headlines:
         print("No headlines found. Exiting.")
         return
@@ -94,13 +96,33 @@ def main():
         print(f"Generated Title: {title}")
         print(f"Generated story length: {len(content)} chars")
         
+        # 2.1 Generate Image
+        print(f"  - Generating image for {args.personality}...")
+        image_prompt = f"A wide cinematic image representing: {title}. Style: {personality_config['style']}. High quality, detailed."
+        image_url = generate_image(image_prompt)
+        
+        featured_media_id = None
+        if image_url:
+            print(f"  - Image generated: {image_url}")
+            if not args.dry_run:
+                print(f"  - Uploading image to WordPress...")
+                featured_media_id = upload_media(image_url, wp_user, wp_pass)
+                if featured_media_id:
+                    print(f"  - Image uploaded. Media ID: {featured_media_id}")
+                else:
+                    print(f"  - Failed to upload image.")
+        else:
+            print(f"  - Failed to generate image.")
+
         # 3. Publish
         if args.dry_run:
             print("Dry run enabled. Skipping publication.")
             print(f"Content Preview: {content[:200]}...")
+            if image_url:
+                print(f"Image URL: {image_url}")
         else:
             print(f"Publishing to WordPress as {args.personality}...")
-            result = publish_to_wordpress(title, content, wp_user, wp_pass, status='draft')
+            result = publish_to_wordpress(title, content, wp_user, wp_pass, status='draft', featured_media_id=featured_media_id)
             print(result)
             
             # Add to history only if published successfully (or attempted)
