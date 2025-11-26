@@ -62,7 +62,7 @@ def generate_story(headline: str, personality_context: str, thesis: str = "", re
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4o", # Or a configurable model
+            model="gpt-5.1", # Or a configurable model
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
